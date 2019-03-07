@@ -125,8 +125,7 @@ USE_TZ = True
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.BasicAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
+        'questioner.apps.user.jwt_auth.JWTAuthentication',
     ),
     'TEST_REQUEST_DEFAULT_FORMAT': 'json'
 }
