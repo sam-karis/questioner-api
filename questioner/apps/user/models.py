@@ -2,6 +2,8 @@ from django.contrib.auth.models import (
     AbstractBaseUser, BaseUserManager, PermissionsMixin
 )
 from django.db import models
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 from django.conf import settings
 from datetime import datetime as date_time, timedelta
 import jwt
@@ -143,3 +145,27 @@ class User(AbstractBaseUser, PermissionsMixin):
             }, settings.SECRET_KEY, algorithm='HS256'
         )
         return token.decode('utf-8')
+
+
+class Profile(models.Model):
+    """
+    create a user profile model
+    """
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    bio = models.TextField(blank=True)
+    image_url = models.CharField(max_length=500, null=True)
+    company = models.CharField(max_length=100, blank=True)
+    phone = models.CharField(max_length=30, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return str(self.user.username)
+
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    """
+    create profile upon user registration.
+    """
+    Profile.objects.create(user=instance)
+    instance.profile.save()
