@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate
 from rest_framework.exceptions import AuthenticationFailed
 
 # local imports
-from questioner.apps.user.models import User
+from questioner.apps.user.models import User, Profile
 from questioner.apps.helpers.validators import Validators
 
 
@@ -67,3 +67,17 @@ class LoginSerializer(serializers.Serializer):
             'access_token': user.token
         }
         return user_detail
+
+
+class GetProfileSerializer(serializers.ModelSerializer):
+    """
+    serializers for user profile
+    """
+    username = serializers.CharField(source='user.username', required=False)
+
+    class Meta:
+        model = Profile
+        fields = (
+            'username', 'bio', 'image_url', 'company', 'phone', 'updated_at'
+        )
+        read_only_fields = ('updated_at',)
