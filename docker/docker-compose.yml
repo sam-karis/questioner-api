@@ -1,0 +1,41 @@
+version: '3.7'
+
+volumes:
+  postgres_data:
+
+services:
+  django:
+    restart: always
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+    ports:
+      - 8000:8000
+    expose:
+      - '8000'
+    networks:
+      - app-network
+    volumes:
+      - ${PWD}:/app
+    env_file:
+      - ../env.sh
+    depends_on:
+      - database
+    stdin_open: true
+    environment:
+      - DJANGO_SETTINGS_MODULE=questioner.settings.development
+      - SECRET_KEY=6d%wf&arauu0l2h4lcd=mgv0j@@pdg3(7^3fxbgf(ot^k1tckj
+      - DATABASE_URL=postgresql://postgres:postgres@database:5432/quiz_db
+
+  database:
+    restart: always
+    image: postgres:11.2
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
