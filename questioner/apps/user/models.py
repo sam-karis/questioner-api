@@ -1,5 +1,5 @@
 from django.contrib.auth.models import (
-    AbstractBaseUser, BaseUserManager, PermissionsMixin
+    AbstractBaseUser, UserManager, PermissionsMixin
 )
 from django.db import models
 from django.dispatch import receiver
@@ -9,7 +9,7 @@ from datetime import datetime as date_time, timedelta
 import jwt
 
 
-class UserManager(BaseUserManager):
+class CustomUserManager(UserManager):
     """
     Django requires that custom users define their own Manager class. By
     inheriting from `BaseUserManager`, we get a lot of the same code used by
@@ -19,7 +19,7 @@ class UserManager(BaseUserManager):
     to create `User` objects.
     """
 
-    def create_user(self, full_name, username, email, password=None):
+    def create_user(self, full_name, username, email, password=None, **extra_fields):  # noqa E501
         """Create and return a `User` with an email, username and password."""
         if username is None:
             raise TypeError('Users must have a username.')
@@ -27,30 +27,16 @@ class UserManager(BaseUserManager):
         if email is None:
             raise TypeError('Users must have an email address.')
 
-        user = self.model(
-            full_name=full_name,
-            username=username,
-            email=self.normalize_email(email))
-        user.set_password(password)
-        user.save()
+        extra_fields.setdefault('full_name', full_name)
+        user = self._create_user(username, email, password, **extra_fields)
 
         return user
 
-    def create_superuser(self, username, email, password):
-        """
-        Create and return a `User` with superuser powers.
-
-        Superuser powers means that this use is an admin that can do anything
-        they want.
-        """
-
-        if password is None:
-            raise TypeError('Superusers must have a password.')
-
-        user = self.create_user(username, email, password)
-        user.is_superuser = True
-        user.is_staff = True
-        user.save()
+    def create_admin(self, full_name, username, email, password, **extra_fields):  # noqa E501
+        """Create and return a `User` with an email, username and password."""
+        extra_fields.setdefault('full_name', full_name)
+        extra_fields.setdefault('is_staff', True)
+        user = self._create_user(username, email, password, **extra_fields)
 
         return user
 
@@ -98,11 +84,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     # The `USERNAME_FIELD` property tells us which field we will use to log in.
     # In this case, we want that to be the email field.
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
+    REQUIRED_FIELDS = ['username', 'full_name']
 
     # Tells Django that the UserManager class defined above should manage
     # objects of this type.
-    objects = UserManager()
+    objects = CustomUserManager()
 
     def __str__(self):
         """

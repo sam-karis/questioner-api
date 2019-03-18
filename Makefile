@@ -37,3 +37,15 @@ run-app:
 psql:
 	@ echo 'Entering psql interface...'
 	@ docker-compose -f ${DEV_COMPOSE_FILE} exec database psql --u postgres
+
+createsuperuser:
+	@ echo 'Enter Admin credentials...'
+	@ docker-compose -f ${DEV_COMPOSE_FILE} exec django python  manage.py createsuperuser
+
+create-admin:
+	@ echo 'Enter Admin credentials...'
+	@ docker-compose -f ${DEV_COMPOSE_FILE} exec django python  manage.py createadmin
+
+lint:
+	@ echo 'Running flake8...'
+	@ docker-compose -f ${DEV_COMPOSE_FILE} exec django flake8

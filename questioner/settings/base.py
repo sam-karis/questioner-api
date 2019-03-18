@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
 
     'questioner.apps.user',
+    'questioner.apps.meetups',
 ]
 
 MIDDLEWARE = [
