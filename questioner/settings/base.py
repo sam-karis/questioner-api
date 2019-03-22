@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 
     'questioner.apps.user',
     'questioner.apps.meetups',
+    'questioner.apps.questions',
 ]
 
 MIDDLEWARE = [
