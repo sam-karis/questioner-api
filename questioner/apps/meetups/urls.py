@@ -13,7 +13,7 @@ urlpatterns = [
         'meetups/user/', OwnerMeetUpAPIView.as_view(),
         name='specific_user_meetups'),
     url(
-        r'^meetups/(?P<meetup_id>(\d+))$',
+        r'^meetups/(?P<slug>([-a-zA-Z0-9]+))$',
         SpecificMeetUpAPIView.as_view(), name='meetup_by_id'
     ),
 ]

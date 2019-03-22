@@ -19,5 +19,6 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('questioner.apps.user.urls', namespace='authentication')), # noqa E501
-    path('api/', include('questioner.apps.meetups.urls', namespace='meetup'))
+    path('api/', include('questioner.apps.meetups.urls', namespace='meetup')),
+    path('api/', include('questioner.apps.questions.urls', namespace='questions')), # noqa E501
 ]
