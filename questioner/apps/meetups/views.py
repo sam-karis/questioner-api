@@ -45,15 +45,15 @@ class SpecificMeetUpAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = MeetUpSerializer
 
     def get_object(self):
-        meetup_id = self.kwargs.get('meetup_id')
-        meetup = MeetUp.objects.filter(id=meetup_id).first()
+        meetup_slug = self.kwargs.get('slug')
+        meetup = MeetUp.objects.filter(slug=meetup_slug).first()
         if not meetup:
-            raise NotFound(f'No meetup related to {meetup_id} id.')
+            raise NotFound(f'No meetup related to {meetup_slug} public id.')
         else:
             self.check_object_permissions(self.request, meetup)
             return meetup
 
-    def put(self, request, meetup_id):
+    def put(self, request, slug):
         meetup = self.get_object()
         if 'start_time' in request.data:
             request.data['start_time'] = ConvertDate.convert_date(
@@ -73,8 +73,8 @@ class SpecificMeetUpAPIView(RetrieveUpdateDestroyAPIView):
         }
         return Response(message, status.HTTP_200_OK)
 
-    def delete(self, request, meetup_id):
-        super().delete(self, request, meetup_id)
+    def delete(self, request, slug):
+        super().delete(self, request, slug)
         return Response({"message": "Meetup Deleted Successfully."})
 
 
@@ -85,7 +85,7 @@ class OwnerMeetUpAPIView(APIView):
     serializer_class = MeetUpSerializer
 
     def get(self, request):
-        meetups = self.queryset.filter(user=request.user.id)
+        meetups = self.queryset.filter(user=request.user)
         if meetups:
             serializer = MeetUpSerializer(meetups, many=True)
             return Response(serializer.data)

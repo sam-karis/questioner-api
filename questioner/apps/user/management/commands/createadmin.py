@@ -76,7 +76,7 @@ class Command(BaseCommand):
                 self.stderr.write("Error: Invalid email")
                 continue
             if self.users_query.filter(email=email):
-                self.stderr.write("Error: Email alreadyv= taken")
+                self.stderr.write("Error: Email already taken")
                 continue
             email_valid = True
             return email
