@@ -22,6 +22,7 @@ class MeetUp(models.Model):
     user = models.ForeignKey(
         User, related_name='meetup', on_delete=models.CASCADE)
     slug = models.SlugField(max_length=200, unique=True, blank=True)
+    tags = models.ManyToManyField('meetups.Tag', related_name='meetups')
 
     def __str__(self):
         return self.title
@@ -47,3 +48,13 @@ class MeetUp(models.Model):
         if not self.slug:
             self.slug = self.generate_slug()
         super().save(*args, **kwargs)
+
+
+class Tag(models.Model):
+    """
+    Create tags to meetups
+    """
+    tag = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.tag
