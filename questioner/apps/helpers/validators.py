@@ -17,3 +17,8 @@ class Validators(object):
                 f'{entity} cannot contain numbers or special characters only'
             )
         return string
+
+    def string_has_no_special_characters(self, string, entity):
+        if not re.match(r'^[a-zA-Z0-9][ A-Za-z0-9_-]*$', string):
+            raise serializers.ValidationError(
+                f'{entity} cannot have special characters')

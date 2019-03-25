@@ -1,20 +1,22 @@
 from rest_framework.views import APIView
 from rest_framework.generics import (
-    ListCreateAPIView, RetrieveUpdateDestroyAPIView)
+    ListAPIView, RetrieveUpdateDestroyAPIView)
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.exceptions import NotFound
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import (
+    IsAuthenticated,)
 
 # Local imports
-from questioner.apps.meetups.models import MeetUp
-from questioner.apps.meetups.serializers import MeetUpSerializer
+from questioner.apps.meetups.models import MeetUp, Tag
+from questioner.apps.meetups.serializers import (
+    MeetUpSerializer, TagsSerializer)
 from questioner.apps.helpers.permissions import (
     IsAdminUserOrReadonly, IsOwnerOrReadOnly)
 from questioner.apps.helpers.utils import ConvertDate
 
 
-class CreateMeetUpAPIView(ListCreateAPIView):
+class CreateMeetUpAPIView(ListAPIView):
 
     permission_classes = (IsAdminUserOrReadonly,)
     queryset = MeetUp.objects.all()
@@ -92,3 +94,25 @@ class OwnerMeetUpAPIView(APIView):
         else:
             message = {'message': "You don't have any meetups yet"}
             return Response(message, status.HTTP_404_NOT_FOUND)
+
+
+class TagsAPIView(ListAPIView):
+    queryset = Tag.objects.all()
+    serializer_class = TagsSerializer
+    permission_classes = (IsAdminUserOrReadonly, )
+
+    def list(self, request):
+        data = self.get_queryset()
+        serializer = self.serializer_class(data, many=True)
+        return Response({'tags': serializer.data}, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        message = {
+            'message': 'Tag created successfully.',
+            'data': serializer.data
+        }
+        return Response(message, status.HTTP_201_CREATED)

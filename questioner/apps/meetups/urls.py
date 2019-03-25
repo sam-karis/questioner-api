@@ -2,7 +2,8 @@ from django.urls import path
 from django.conf.urls import url
 
 from questioner.apps.meetups.views import (
-    CreateMeetUpAPIView, SpecificMeetUpAPIView, OwnerMeetUpAPIView
+    CreateMeetUpAPIView, SpecificMeetUpAPIView, OwnerMeetUpAPIView,
+    TagsAPIView
 )
 
 app_name = 'meetups'
@@ -16,4 +17,5 @@ urlpatterns = [
         r'^meetups/(?P<slug>([-a-zA-Z0-9]+))$',
         SpecificMeetUpAPIView.as_view(), name='meetup_by_id'
     ),
+    path('meetups/tags/', TagsAPIView.as_view(), name="meetups-tags")
 ]
