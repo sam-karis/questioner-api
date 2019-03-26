@@ -23,7 +23,7 @@ services:
       - database
     stdin_open: true
     environment:
-      - DJANGO_SETTINGS_MODULE=questioner.settings.development
+      - DJANGO_SETTINGS_MODULE=questioner.settings.production
       - SECRET_KEY=6d%wf&arauu0l2h4lcd=mgv0j@@pdg3(7^3fxbgf(ot^k1tckj
       - DATABASE_URL=postgresql://postgres:postgres@database:5432/quiz_db
 

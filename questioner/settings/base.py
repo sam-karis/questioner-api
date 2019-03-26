@@ -36,8 +36,13 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
 
-CORS_ORIGIN_WHITELIST = ('*')
+CORS_ORIGIN_WHITELIST = (
+    '0.0.0.0:4000',
+    'localhost:4000',
+    '*'
+)
 
+CORS_ORIGIN_ALLOW_ALL = True
 
 # Application definition
 
@@ -63,6 +68,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'questioner.urls'
@@ -144,4 +150,4 @@ REST_FRAMEWORK = {
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE='whitenoise.django.GzipManifestStaticFilesStorage'
